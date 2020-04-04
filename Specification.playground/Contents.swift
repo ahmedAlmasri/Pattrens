@@ -5,7 +5,7 @@ public protocol Specification {
 	
 	func and(other: Specification) -> Specification
 	func or(other: Specification) -> Specification
-	func IsSatisfiedBy(candidate: Any) -> Bool
+	func isSatisfiedBy(candidate: Any) -> Bool
 
 
 }
@@ -33,9 +33,9 @@ public class AndSpecification : Specification {
 		self.rightCondition = rightCondition
 	}
 
-	public func IsSatisfiedBy(candidate: Any) -> Bool {
+	public func isSatisfiedBy(candidate: Any) -> Bool {
 
-		return leftCondition.IsSatisfiedBy(candidate: candidate) && rightCondition.IsSatisfiedBy(candidate: candidate)
+		return leftCondition.isSatisfiedBy(candidate: candidate) && rightCondition.isSatisfiedBy(candidate: candidate)
 	}
 }
 
@@ -49,10 +49,10 @@ public class OrSpecification: Specification {
 		self.rightCondition = rightCondition
 	}
 
-	public func IsSatisfiedBy(candidate: Any) -> Bool {
+	public func isSatisfiedBy(candidate: Any) -> Bool {
 
-		return leftCondition.IsSatisfiedBy(candidate: candidate) ||
-               rightCondition.IsSatisfiedBy(candidate: candidate)
+		return leftCondition.isSatisfiedBy(candidate: candidate) ||
+               rightCondition.isSatisfiedBy(candidate: candidate)
 	}
 }
 
@@ -62,7 +62,7 @@ public class RegexSpecification: Specification {
 		self.regex = try! NSRegularExpression(pattern: pattern, options: [])
 	}
 
-  	public func IsSatisfiedBy(candidate: Any) -> Bool {
+  	public func isSatisfiedBy(candidate: Any) -> Bool {
 		guard let value = candidate as? String else { return false }
 		return regex.numberOfMatches(in: value, options: [],
                                                  range: NSMakeRange(0, value.count)) > 0
@@ -72,7 +72,7 @@ public class RegexSpecification: Specification {
 
 
 func == (lhs: Specification, rhs: Any) -> Bool {
-	return lhs.IsSatisfiedBy(candidate: rhs)
+	return lhs.isSatisfiedBy(candidate: rhs)
 }
 
 let emailRegex = RegexSpecification(pattern: "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}")
@@ -85,5 +85,3 @@ emailRegex == "ahmed.almasri@ymail.com"
 result == "ahmed.almasri@ymail.com"
 result == "ahmed.almasri"
 result == "123-456-7890"
-
-
